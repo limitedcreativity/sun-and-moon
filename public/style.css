@@ -1,0 +1,124 @@
+html, body {
+  height: 100%;
+}
+
+body { 
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(10, 41, 8);
+  box-sizing: border-box;
+}
+
+body > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game {
+  position: relative;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+
+  transform-origin: bottom;
+  transform: translateY(-20vmin) perspective(25vmin) rotate3d(1, 0, 0, 10deg);
+}
+
+.grid__row {
+  display: flex;
+}
+
+.grid__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: solid 0.25vmin rgba(255,255,255,0.5);
+  width: 12vmin;
+  height: 12vmin;
+  padding: 0;
+  margin: 0;
+  /* cursor: none; */
+}
+
+.hud__unit svg { 
+  /* pointer-events: none; */
+}
+
+.grid__dot {
+  width: 1px;
+  height: 1px;
+}
+
+
+.grid__button:hover {
+  background: rgba(255,255,255,0.5);
+}
+
+.unit {
+  pointer-events: none;
+  position: fixed;
+  width: 10vmin;
+  top: 0;
+  left: 0;
+  transform-origin: bottom;
+}
+
+.unit svg {
+  animation: bob 2000ms infinite ease-in-out;
+}
+
+@keyframes bob {
+  from, to {
+    transform: none;
+  }
+  50% {
+    transform: translateY(10%);
+  }
+}
+
+
+/* HUD */
+
+.hud {
+  position: fixed;
+  bottom: 2vmin;
+  left: 2vmin;
+  display: flex;
+  background: #654;
+  border-radius: 1vmin;
+  align-items: center;
+  padding: 1vmin 2vmin;
+  box-shadow: 0 1vmin 2vmin rgba(0, 0, 0, 0.25);
+}
+
+.hud__units {
+  display: flex;
+}
+
+.hud__coins {
+  width: 8vmin;
+  height: 8vmin;
+  background: yellow;
+  margin-right: 1vmin;
+  border-radius: 1vmin;
+}
+
+.hud__unit {
+  width: 5vmin;
+  padding: 0 1.75vmin;
+  border-radius: 1vmin;
+}
+
+.hud__unit:hover {
+  background: white
+}
+
+.hud__unit--selected {
+  background: yellow
+}
