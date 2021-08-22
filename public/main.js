@@ -1,8 +1,10 @@
 import { Elm } from '../src/Main.elm'
+import { levels, startingGold, costs } from './settings.js'
 
 
 const app = Elm.Main.init({
   node: document.getElementById('app'),
+  flags: { startingGold, costs, levels }
 })
 
 

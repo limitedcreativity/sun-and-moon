@@ -1,73 +1,148 @@
-module Unit exposing (Unit(..), view)
+module Unit exposing
+    ( Unit, enemy, guardian
+    , simulate
+    , damage, isDead
+    , view, toEnemy, toGuardian
+    )
 
-import Html.Attributes exposing (draggable)
+{-|
+
+@docs Unit, enemy, guardian
+@docs Action, simulate
+@docs damage, isDead
+@docs view, toEnemy, toGuardian
+
+-}
+
+import Action exposing (Action)
+import Dict exposing (Dict)
+import Enemy exposing (Enemy)
+import Grid
+import Guardian
+import Health
+import Shrine exposing (Shrine)
 import Svg exposing (Svg)
-import Svg.Attributes as Attr
+import World exposing (World)
 
 
 type Unit
-    = Warrior
-    | Archer
-    | Mage
+    = Guardian Guardian.Guardian
+    | Enemy Enemy.Enemy
 
 
-toStyle :
-    Unit
-    -> { color : String }
-toStyle unit =
+
+-- CREATE
+
+
+guardian : Guardian.Guardian -> Unit
+guardian =
+    Guardian
+
+
+enemy : Enemy.Enemy -> Unit
+enemy =
+    Enemy
+
+
+
+-- UPDATE
+
+
+simulate :
+    { units : Dict Grid.Position Unit
+    , shrine : Shrine
+    }
+    -> Grid.Position
+    -> Unit
+    -> Action
+simulate state position unit =
+    let
+        world =
+            toWorld state
+    in
     case unit of
-        Warrior ->
-            { color = "red" }
+        Guardian g ->
+            Guardian.simulate world position g
 
-        Archer ->
-            { color = "green" }
+        Enemy e ->
+            Enemy.simulate world position e
 
-        Mage ->
-            { color = "blue" }
+
+damage : Int -> Unit -> Unit
+damage amount unit =
+    case unit of
+        Guardian g ->
+            Guardian (Health.damage amount g)
+
+        Enemy e ->
+            Enemy (Health.damage amount e)
+
+
+isDead : Unit -> Bool
+isDead unit =
+    case unit of
+        Guardian g ->
+            Health.isDead g
+
+        Enemy e ->
+            Health.isDead e
+
+
+
+-- READ
 
 
 view : Unit -> Svg msg
 view unit =
-    let
-        style =
-            toStyle unit
-    in
-    Svg.svg [ Attr.viewBox "0 0 50 75", Attr.width "100%", draggable "false" ]
-        [ --     Svg.rect
-          --     [ Attr.x "0"
-          --     , Attr.y "0"
-          --     , Attr.width "50"
-          --     , Attr.height "75"
-          --     , Attr.fill "white"
-          --     ]
-          --     []
-          -- ,
-          Svg.circle
-            [ Attr.cx "25"
-            , Attr.cy "50"
-            , Attr.r "20"
-            , Attr.fill style.color
-            ]
-            []
-        , Svg.circle
-            [ Attr.cx "25"
-            , Attr.cy "25"
-            , Attr.r "20"
-            , Attr.fill "tan"
-            ]
-            []
-        , Svg.circle
-            [ Attr.cx "20"
-            , Attr.cy "24"
-            , Attr.r "3"
-            , Attr.fill "black"
-            ]
-            []
-        , Svg.circle
-            [ Attr.cx "30"
-            , Attr.cy "24"
-            , Attr.r "3"
-            , Attr.fill "black"
-            ]
-            []
-        ]
+    case unit of
+        Guardian g ->
+            Guardian.view g
+
+        Enemy e ->
+            Enemy.view e
+
+
+toEnemy : Unit -> Maybe Enemy.Enemy
+toEnemy unit =
+    case unit of
+        Enemy e ->
+            Just e
+
+        _ ->
+            Nothing
+
+
+toGuardian : Unit -> Maybe Guardian.Guardian
+toGuardian unit =
+    case unit of
+        Guardian g ->
+            Just g
+
+        _ ->
+            Nothing
+
+
+
+-- INTERNALS
+
+
+toWorld :
+    { units : Dict Grid.Position Unit
+    , shrine : Shrine
+    }
+    -> World
+toWorld =
+    World.fromState
+        { isEnemy = isEnemy
+        , isGuardian = isGuardian
+        }
+
+
+isEnemy : Unit -> Bool
+isEnemy =
+    toEnemy >> (/=) Nothing
+
+
+isGuardian : Unit -> Bool
+isGuardian =
+    toGuardian >> (/=) Nothing

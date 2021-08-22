@@ -9,12 +9,17 @@ body {
   justify-content: center;
   background: rgb(10, 41, 8);
   box-sizing: border-box;
+  overflow: hidden;
+  font-family: 'Urbanist', sans-serif;
 }
+
+* { font-family: inherit;}
 
 body > div {
   display: flex;
   align-items: center;
   justify-content: center;
+  
 }
 
 .game {
@@ -26,7 +31,7 @@ body > div {
   flex-direction: column;
 
   transform-origin: bottom;
-  transform: translateY(-20vmin) perspective(25vmin) rotate3d(1, 0, 0, 10deg);
+  transform: translateY(-20vmin) perspective(25vmin) rotate3d(1, 0, 0, 15deg);
 }
 
 .grid__row {
@@ -85,16 +90,38 @@ body > div {
 
 /* HUD */
 
-.hud {
+.hud__wave {
+  position: fixed;
+  top: 4vmin;
+  left: 4vmin;
+  color: white;
+  padding: 1.5vmin 3vmin;
+  border: solid 0.25vmin white;
+  border-radius: 0.5vmin;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.hud__day {
+  font-size: 4vmin;
+  font-weight: bold;
+}
+
+.hud__eclipse {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.hud__build {
   position: fixed;
   bottom: 2vmin;
-  left: 2vmin;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  background: #654;
+  background: rgba(0, 0, 0, 0.5);;
   border-radius: 1vmin;
   align-items: center;
   padding: 1vmin 2vmin;
   box-shadow: 0 1vmin 2vmin rgba(0, 0, 0, 0.25);
+  color: white;
 }
 
 .hud__units {
@@ -102,23 +129,33 @@ body > div {
 }
 
 .hud__coins {
+  display: none;
   width: 8vmin;
   height: 8vmin;
-  background: yellow;
+  border: solid 0.25vmin white;
   margin-right: 1vmin;
   border-radius: 1vmin;
 }
 
 .hud__unit {
   width: 5vmin;
-  padding: 0 1.75vmin;
+  padding: 0 .5vmin;
   border-radius: 1vmin;
+  margin-left: 1vmin;
+  border: solid 0.25vmin transparent;
 }
 
 .hud__unit:hover {
-  background: white
+  background: rgba(255,255,255,0.5);
 }
 
 .hud__unit--selected {
-  background: yellow
+  border: solid 0.25vmin dodgerblue;
+  animation: bob 1000ms ease-in-out infinite;
+}
+
+.hud__start {
+  margin-left: 2vmin;
+  padding: 0.5vmin 1vmin;
+  /* animation: bob 1000ms ease-in-out infinite ; */
 }
