@@ -1,6 +1,6 @@
 import { Elm } from '../src/Main.elm'
 import { gameplay } from './scott.js'
-import { music } from './dhruv.js'
+import { music } from './music.js'
 
 
 const app = Elm.Main.init({
