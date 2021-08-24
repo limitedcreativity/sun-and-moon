@@ -1,5 +1,6 @@
 module Unit exposing
-    ( Unit, enemy, guardian
+    ( Settings
+    , Unit, enemy, guardian
     , simulate
     , damage, isDead
     , view, toEnemy, toGuardian
@@ -7,6 +8,7 @@ module Unit exposing
 
 {-|
 
+@docs Settings
 @docs Unit, enemy, guardian
 @docs Action, simulate
 @docs damage, isDead
@@ -23,6 +25,12 @@ import Health
 import Shrine exposing (Shrine)
 import Svg exposing (Svg)
 import World exposing (World)
+
+
+type alias Settings =
+    { guardian : Guardian.Settings
+    , enemy : Enemy.Settings
+    }
 
 
 type Unit

@@ -1,11 +1,14 @@
 module Guardian exposing
-    ( Guardian, warrior, archer, mage
+    ( Settings
+    , Guardian, warrior, archer, mage
     , simulate
     , view, viewPreview
+    , GuardianKind(..)
     )
 
 {-|
 
+@docs Settings
 @docs Guardian, warrior, archer, mage
 @docs simulate
 @docs view, viewPreview
@@ -19,6 +22,13 @@ import Html.Attributes exposing (draggable)
 import Svg exposing (Svg)
 import Svg.Attributes as Attr
 import World exposing (World)
+
+
+type alias Settings =
+    { warrior : { health : Int, damage : Int }
+    , archer : { health : Int, damage : Int, range : Int }
+    , mage : { health : Int, damage : Int, range : Int }
+    }
 
 
 type alias Guardian =

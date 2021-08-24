@@ -1,24 +1,27 @@
-module Level exposing (Level, decoder)
+module Level exposing (Gate, Level, Spawn, Wave, decoder, positionAt)
 
 import Enemy exposing (Enemy)
+import Grid
 import Json.Decode as Json
+import World
 
 
 type alias Level =
-    { reward : Int
+    { dayLengthInMs : Int
+    , reward : Int
     , waves : List Wave
     }
 
 
 type alias Wave =
-    { round : Int
+    { startTime : Int
     , spawns : List Spawn
     }
 
 
 type alias Spawn =
     { gate : Gate
-    , enemies : List Enemy
+    , enemy : Enemy
     }
 
 
@@ -28,44 +31,62 @@ type Gate
     | West
 
 
-decoder : Json.Decoder Level
-decoder =
-    Json.map2 Level
+positionAt : Gate -> Grid.Position
+positionAt gate =
+    case gate of
+        North ->
+            ( World.size // 2, 0 )
+
+        East ->
+            ( World.size - 1, World.size // 2 )
+
+        West ->
+            ( 0, World.size // 2 )
+
+
+decoder : Int -> Json.Decoder Level
+decoder msPerTurn =
+    Json.map3 Level
+        (Json.field "lengthOfDay" Json.int)
         (Json.field "reward" Json.int)
-        (Json.field "waves" wavesDecoder)
+        (Json.field "waves" (wavesDecoder msPerTurn))
 
 
-wavesDecoder : Json.Decoder (List Wave)
-wavesDecoder =
+wavesDecoder : Int -> Json.Decoder (List Wave)
+wavesDecoder msPerTurn =
     Json.keyValuePairs spawnsDecoder
         |> Json.map
             (List.filterMap
-                (\( roundStr, spawns ) -> String.toInt roundStr |> Maybe.map (\round -> { round = round, spawns = spawns }))
+                (\( roundStr, spawns ) ->
+                    String.toInt roundStr
+                        |> Maybe.map (\round -> round * msPerTurn)
+                        |> Maybe.map (\startTime -> { startTime = startTime, spawns = spawns })
+                )
             )
 
 
 spawnsDecoder : Json.Decoder (List Spawn)
 spawnsDecoder =
-    Json.keyValuePairs (Json.oneOf [ Json.list enemyDecoder, Json.succeed [] ])
+    Json.keyValuePairs enemyDecoder
         |> Json.map
             (List.filterMap
-                (\( key, enemies ) ->
+                (\( key, enemy ) ->
                     toGate key
-                        |> Maybe.map (\gate -> { gate = gate, enemies = enemies })
+                        |> Maybe.map (\gate -> { gate = gate, enemy = enemy })
                 )
             )
 
 
 toGate : String -> Maybe Gate
 toGate str =
-    case String.toUpper str of
-        "NORTH" ->
+    case String.toLower str of
+        "north" ->
             Just North
 
-        "EAST" ->
+        "east" ->
             Just East
 
-        "WEST" ->
+        "west" ->
             Just West
 
         _ ->
@@ -77,8 +98,8 @@ enemyDecoder =
     Json.string
         |> Json.andThen
             (\enemy ->
-                case enemy of
-                    "rogue" ->
+                case String.toLower enemy of
+                    "warrior" ->
                         Json.succeed Enemy.rogue
 
                     _ ->

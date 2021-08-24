@@ -1,8 +1,13 @@
-module Shrine exposing (Shrine, view)
+module Shrine exposing (Settings, Shrine, view)
 
 import Health exposing (Health)
 import Svg exposing (Svg)
 import Svg.Attributes as Attr
+
+
+type alias Settings =
+    { health : Int
+    }
 
 
 type alias Shrine =

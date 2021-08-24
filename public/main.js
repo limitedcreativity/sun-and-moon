@@ -1,10 +1,11 @@
 import { Elm } from '../src/Main.elm'
-import { levels, startingGold, costs } from './settings.js'
+import { gameplay } from './scott.js'
+import { music } from './dhruv.js'
 
 
 const app = Elm.Main.init({
   node: document.getElementById('app'),
-  flags: { startingGold, costs, levels }
+  flags: { music, gameplay }
 })
 
 
@@ -28,10 +29,21 @@ let state = {
 }
 
 const handlers = {
-  'playClip': (filepath) => {
-    const clip = state.cache[filepath] || new Audio(filepath)
-    state.cache[filepath] = clip
-    clip.play()
+  'log': console.log,
+  'newGameStarted': () => window.requestAnimationFrame(sendOffsets),
+  'dayStarted': () => music.handleEvents.onDayStart(),
+  'nightApproaches': () => music.handleEvents.onNightApproach(),
+  'playClip': (keys) => {
+    const clips = keys.split('.').reduce(
+      (acc, key) => acc && acc[key] ? acc[key] : [],
+      music.soundEffects
+    )
+    if (clips.length === 0) return
+    const randomClip = clips[parseInt(Math.random() * clips.length)]
+    if (randomClip) {
+      const audio = state.cache[randomClip] || (state.cache[randomClip] = new Audio(randomClip))
+      audio.play()
+    }
   }
 }
 app.ports.outgoing.subscribe(({ tag, data }) => {

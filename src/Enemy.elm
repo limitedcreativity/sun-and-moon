@@ -1,11 +1,14 @@
 module Enemy exposing
-    ( Enemy, rogue
+    ( Settings
+    , Enemy, rogue
     , simulate
     , view
+    , EnemyKind(..)
     )
 
 {-|
 
+@docs Settings
 @docs Enemy, rogue
 @docs simulate
 @docs view
@@ -18,6 +21,13 @@ import Health exposing (Health)
 import Svg exposing (Svg)
 import Svg.Attributes as Attr
 import World exposing (World)
+
+
+type alias Settings =
+    { warrior : { health : Int, damage : Int }
+    , archer : { health : Int, damage : Int, range : Int }
+    , mage : { health : Int, damage : Int, range : Int }
+    }
 
 
 type alias Enemy =

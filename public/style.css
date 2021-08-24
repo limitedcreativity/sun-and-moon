@@ -7,6 +7,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
   background: rgb(10, 41, 8);
   box-sizing: border-box;
   overflow: hidden;
@@ -152,6 +153,11 @@ body > div {
 .hud__unit--selected {
   border: solid 0.25vmin dodgerblue;
   animation: bob 1000ms ease-in-out infinite;
+}
+
+.hud__unit--locked {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .hud__start {
