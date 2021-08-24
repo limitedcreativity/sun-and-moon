@@ -16,7 +16,7 @@ body {
 
 * { font-family: inherit;}
 
-body > div {
+body > div[data-elm-hot] {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -167,5 +167,10 @@ body > div {
 }
 
 .page {
-  display: block;
+  display: flex;
+  flex-direction: column;
+}
+
+.page__title {
+  margin-bottom: 0;
 }
