@@ -165,3 +165,7 @@ body > div {
   padding: 0.5vmin 1vmin;
   /* animation: bob 1000ms ease-in-out infinite ; */
 }
+
+.page {
+  display: block;
+}
