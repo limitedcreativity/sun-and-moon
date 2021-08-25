@@ -95,7 +95,7 @@ simulate settings world position guardian =
         Mage ->
             Simulate.mage
                 { position = position
-                , allies = world.guardians
+                , allies = world.damagedGuardiansExceptFor position
                 , settings = settings.mage
                 }
 

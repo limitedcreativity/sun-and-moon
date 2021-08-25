@@ -64,9 +64,6 @@ simulate settings world position unit =
     let
         targets =
             World.shrinePosition :: world.guardians
-
-        allies =
-            world.enemies
     in
     case unit.kind of
         Rogue ->
@@ -87,7 +84,7 @@ simulate settings world position unit =
         Necromancer ->
             Simulate.mage
                 { position = position
-                , allies = allies
+                , allies = world.damagedEnemiesExceptFor position
                 , settings = settings.mage
                 }
 

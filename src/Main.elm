@@ -310,6 +310,9 @@ updateDayPhase { previousTimeElapsed, level, data, model } =
 updateNightPhase : { previousTimeElapsed : Float, remainingWaves : List Level.Wave, model : Model, data : GameData } -> ( Model, Cmd Msg )
 updateNightPhase { previousTimeElapsed, remainingWaves, model, data } =
     let
+        level =
+            Queue.current data.levels
+
         enemies : List Enemy
         enemies =
             data.units
@@ -338,6 +341,7 @@ updateNightPhase { previousTimeElapsed, remainingWaves, model, data } =
                                     | timeElapsed = 0
                                     , phase = DayPhase { selected = Nothing }
                                     , levels = Queue.next data.levels
+                                    , playerGold = level.reward + data.playerGold
                                 }
                             , Cmd.batch
                                 [ Ports.sendDayStarted

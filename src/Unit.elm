@@ -154,6 +154,7 @@ toWorld =
     World.fromState
         { isEnemy = isEnemy
         , isGuardian = isGuardian
+        , isDamaged = isDamaged
         }
 
 
@@ -165,3 +166,13 @@ isEnemy =
 isGuardian : Unit -> Bool
 isGuardian =
     toGuardian >> (/=) Nothing
+
+
+isDamaged : Unit -> Bool
+isDamaged unit =
+    case unit of
+        Guardian { health } ->
+            health.current < health.max
+
+        Enemy { health } ->
+            health.current < health.max

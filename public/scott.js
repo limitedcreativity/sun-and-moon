@@ -54,7 +54,7 @@ export const gameplay = {
   levels: [
     {
       lengthOfDay: 5000,
-      reward: 500,
+      reward: 1000,
       waves: {
         0: { north: warrior },
         5: { east: warrior },
@@ -63,7 +63,7 @@ export const gameplay = {
     },
     {
       lengthOfDay: 4000,
-      reward: 1000,
+      reward: 2000,
       waves: {
         0: { east: warrior },
         5: { west: warrior },
