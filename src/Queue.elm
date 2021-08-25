@@ -1,4 +1,4 @@
-module Queue exposing (Queue, current, fromList, next, noMoreLeft)
+module Queue exposing (Queue, completed, current, fromList, next, noMoreLeft, remaining)
 
 {-| Guaranteed to have one item, only has functions for progressing forward
 -}
@@ -6,7 +6,8 @@ module Queue exposing (Queue, current, fromList, next, noMoreLeft)
 
 type Queue item
     = Queue
-        { current : item
+        { before : List item
+        , current : item
         , after : List item
         }
 
@@ -18,7 +19,7 @@ fromList items =
             Nothing
 
         head :: tail ->
-            Just (Queue { current = head, after = tail })
+            Just (Queue { before = [], current = head, after = tail })
 
 
 current : Queue item -> item
@@ -33,9 +34,23 @@ next (Queue data) =
             Queue data
 
         head :: tail ->
-            Queue { current = head, after = tail }
+            Queue
+                { before = data.current :: data.before
+                , current = head
+                , after = tail
+                }
 
 
 noMoreLeft : Queue item -> Bool
-noMoreLeft (Queue data) =
-    List.isEmpty data.after
+noMoreLeft =
+    remaining >> (==) 0
+
+
+completed : Queue item -> Int
+completed (Queue data) =
+    List.length data.before
+
+
+remaining : Queue item -> Int
+remaining (Queue data) =
+    List.length data.after

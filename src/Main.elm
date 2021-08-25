@@ -90,6 +90,7 @@ type alias GameData =
     , phase : GamePhase
     , levels : Queue Level
     , timeElapsed : Float
+    , playerGold : Int
     }
 
 
@@ -456,6 +457,7 @@ startNewGame model =
         , phase = DayPhase { selected = Nothing }
         , levels = model.settings.gameplay.levels
         , timeElapsed = 0
+        , playerGold = model.settings.gameplay.startingGold
         }
     , Cmd.batch
         [ Ports.sendNewGameStarted
@@ -690,10 +692,26 @@ viewCurrentWave model data =
         level : Level
         level =
             Queue.current data.levels
+
+        currentLevel =
+            Queue.completed data.levels + 1
+
+        remainingLevels =
+            Queue.remaining data.levels
     in
     Html.div [ Attr.class "hud__wave" ]
-        [ Html.div [ Attr.class "hud__day" ] [ Html.text "Day 1" ]
-        , Html.div [ Attr.class "hud__eclipse" ] [ Html.text "10 days until the solar eclipse" ]
+        [ Html.div [ Attr.class "hud__day" ] [ "Day {{day}}" |> String.replace "{{day}}" (String.fromInt currentLevel) |> Html.text ]
+        , Html.div [ Attr.class "hud__eclipse" ]
+            [ case remainingLevels of
+                0 ->
+                    Html.text "The solar eclipse"
+
+                1 ->
+                    Html.text "The day before the solar eclipse"
+
+                _ ->
+                    "{{remainingLevels}} days until the solar eclipse" |> String.replace "{{remainingLevels}}" (String.fromInt remainingLevels) |> Html.text
+            ]
         , case data.phase of
             DayPhase _ ->
                 Html.progress [ Attr.value (String.fromFloat data.timeElapsed), Attr.max (String.fromInt level.dayLengthInMs) ] []
