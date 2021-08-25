@@ -57,23 +57,28 @@ enemy =
 
 
 simulate :
-    { units : Dict Grid.Position Unit
-    , shrine : Shrine
+    { settings
+        | guardian : Guardian.Settings
+        , enemy : Enemy.Settings
     }
+    ->
+        { units : Dict Grid.Position Unit
+        , shrine : Shrine
+        }
     -> Grid.Position
     -> Unit
     -> Action
-simulate state position unit =
+simulate settings state position unit =
     let
         world =
             toWorld state
     in
     case unit of
         Guardian g ->
-            Guardian.simulate world position g
+            Guardian.simulate settings.guardian world position g
 
         Enemy e ->
-            Enemy.simulate world position e
+            Enemy.simulate settings.enemy world position e
 
 
 damage : Int -> Unit -> Unit

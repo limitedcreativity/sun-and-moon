@@ -18,6 +18,7 @@ module Enemy exposing
 import Action exposing (Action)
 import Grid
 import Health exposing (Health)
+import Simulate
 import Svg exposing (Svg)
 import Svg.Attributes as Attr
 import World exposing (World)
@@ -52,32 +53,20 @@ rogue =
 
 
 simulate :
-    World
+    Settings
+    -> World
     -> Grid.Position
     -> Enemy
     -> Action
-simulate world position unit =
+simulate settings world position unit =
     case unit.kind of
         Rogue ->
-            simulateRogue world position
-
-
-simulateRogue : World -> Grid.Position -> Action
-simulateRogue world position =
-    let
-        nearestTarget =
-            Grid.nearestTarget position (World.shrinePosition :: world.guardians)
-    in
-    case nearestTarget of
-        Just target ->
-            if Grid.isAdjacentTo target position then
-                Action.AttackTargetAt target
-
-            else
-                Action.MoveTo (Grid.nextPositionTowards target position)
-
-        Nothing ->
-            Action.DoNothing
+            Simulate.warrior
+                { world = world
+                , position = position
+                , targets = World.shrinePosition :: world.guardians
+                , damage = settings.warrior.damage
+                }
 
 
 

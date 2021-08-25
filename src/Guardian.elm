@@ -19,6 +19,7 @@ import Action exposing (Action)
 import Grid
 import Health exposing (Health)
 import Html.Attributes exposing (draggable)
+import Simulate
 import Svg exposing (Svg)
 import Svg.Attributes as Attr
 import World exposing (World)
@@ -69,14 +70,20 @@ mage =
 
 
 simulate :
-    World
+    Settings
+    -> World
     -> Grid.Position
     -> Guardian
     -> Action
-simulate world position guardian =
+simulate settings world position guardian =
     case guardian.kind of
         Warrior ->
-            simulateWarrior world position
+            Simulate.warrior
+                { position = position
+                , targets = world.enemies
+                , world = world
+                , damage = settings.warrior.damage
+                }
 
         Archer ->
             simulateArcher world position
@@ -85,34 +92,16 @@ simulate world position guardian =
             Action.DoNothing
 
 
-simulateWarrior : World -> Grid.Position -> Action
-simulateWarrior world position =
-    let
-        nearestEnemy =
-            Grid.nearestTarget position world.enemies
-    in
-    case nearestEnemy of
-        Just enemy ->
-            if Grid.isAdjacentTo enemy position then
-                Action.AttackTargetAt enemy
-
-            else
-                Action.MoveTo (Grid.nextPositionTowards enemy position)
-
-        Nothing ->
-            Action.DoNothing
-
-
 simulateArcher : World -> Grid.Position -> Action
 simulateArcher world position =
     let
         nearestEnemy =
-            Grid.nearestTarget position world.enemies
+            Grid.nearestShootableTarget position world.enemies
     in
     case nearestEnemy of
         Just enemy ->
             if Grid.withinRange 4 enemy position then
-                Action.AttackTargetAt enemy
+                Action.AttackTargetAt 1 enemy
 
             else
                 Action.MoveTo (Grid.nextPositionTowards enemy position)

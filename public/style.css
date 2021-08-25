@@ -131,12 +131,21 @@ body > div[data-elm-hot] {
 
 .hud__coins {
   display: none;
-  width: 8vmin;
   height: 8vmin;
-  border: solid 0.25vmin white;
   margin-right: 1vmin;
-  border-radius: 1vmin;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  color: white;
+  font-size: 3vmin;
 }
+
+.hud__coins::before {
+  content: '💰';
+  display: flex;
+  margin-right: 1vmin;
+}
+
 
 .hud__unit {
   width: 5vmin;
@@ -144,6 +153,19 @@ body > div[data-elm-hot] {
   border-radius: 1vmin;
   margin-left: 1vmin;
   border: solid 0.25vmin transparent;
+}
+
+.hud__unit-cost {
+  color: white;
+  display: flex;
+  font-size: 1.5vmin;
+}
+  
+.hud__unit-cost::before {
+  content: '💰';
+  display: flex;
+  align-items: baseline;
+  margin-right: 0.25vmin;
 }
 
 .hud__unit:hover {

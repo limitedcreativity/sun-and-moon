@@ -23,11 +23,12 @@ decoder =
 
 
 type alias GameplaySettings =
-    { levels : Queue Level
+    { msPerTurn : Int
+    , levels : Queue Level
     , startingGold : Int
+    , costs : Costs
     , shrine : Shrine.Settings
     , units : Unit.Settings
-    , msPerTurn : Int
     }
 
 
@@ -36,17 +37,12 @@ gameplaySettingsDecoder =
     Json.field "turnSpeed" Json.int
         |> Json.andThen
             (\msPerTurn ->
-                Json.map5 GameplaySettings
-                    (Json.field "levels"
-                        (Json.list (Level.decoder msPerTurn)
-                            |> Json.map Queue.fromList
-                            |> Json.andThen (Maybe.map Json.succeed >> Maybe.withDefault (Json.fail "Levels list was empty"))
-                        )
-                    )
+                Json.map5 (GameplaySettings msPerTurn)
+                    (Json.field "levels" (levelsDecoder msPerTurn))
                     (Json.field "startingGold" Json.int)
+                    (Json.field "costs" costsDecoder)
                     (Json.field "shrine" shrineSettingsDecoder)
                     (Json.field "units" unitSettingsDecoder)
-                    (Json.succeed msPerTurn)
             )
 
 
@@ -54,6 +50,28 @@ shrineSettingsDecoder : Json.Decoder Shrine.Settings
 shrineSettingsDecoder =
     Json.map Shrine.Settings
         (Json.field "health" Json.int)
+
+
+type alias Costs =
+    { warrior : Int
+    , archer : Int
+    , mage : Int
+    }
+
+
+costsDecoder : Json.Decoder Costs
+costsDecoder =
+    Json.map3 Costs
+        (Json.field "warrior" Json.int)
+        (Json.field "archer" Json.int)
+        (Json.field "mage" Json.int)
+
+
+levelsDecoder : Int -> Json.Decoder (Queue Level)
+levelsDecoder msPerTurn =
+    Json.list (Level.decoder msPerTurn)
+        |> Json.map Queue.fromList
+        |> Json.andThen (Maybe.map Json.succeed >> Maybe.withDefault (Json.fail "Levels list was empty"))
 
 
 type alias MusicSettings =

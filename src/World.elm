@@ -12,7 +12,7 @@ type alias World =
 
 size : Int
 size =
-    9
+    Grid.size
 
 
 shrinePosition : Grid.Position

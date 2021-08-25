@@ -95,7 +95,7 @@ type alias GameData =
 
 
 type GamePhase
-    = DayPhase { selected : Maybe Guardian }
+    = DayPhase { selected : Maybe { guardian : Guardian, cost : Int } }
     | NightPhase { remainingWaves : List Level.Wave }
 
 
@@ -141,7 +141,7 @@ type Msg
     | ClickedPlayGame
     | ClickedMainMenu
     | TileClicked ( Int, Int )
-    | GuardianClicked Guardian
+    | GuardianClicked { guardian : Guardian, cost : Int }
     | Tick Float
 
 
@@ -198,23 +198,24 @@ update msg model_ =
 
         TileClicked ( x, y ) ->
             updateGame
-                (\model ->
-                    case ( model.phase, isShrineTile x y ) of
+                (\data ->
+                    case ( data.phase, isShrineTile x y ) of
                         ( DayPhase { selected }, False ) ->
                             case selected of
-                                Just guardian ->
-                                    ( { model
+                                Just { guardian, cost } ->
+                                    ( { data
                                         | phase = DayPhase { selected = Nothing }
-                                        , units = Dict.insert ( x, y ) (Unit.guardian guardian) model.units
+                                        , units = Dict.insert ( x, y ) (Unit.guardian guardian) data.units
+                                        , playerGold = data.playerGold - cost
                                       }
                                     , Ports.sendGuardianBuilt guardian
                                     )
 
                                 Nothing ->
-                                    ( model, Cmd.none )
+                                    ( data, Cmd.none )
 
                         _ ->
-                            ( model, Cmd.none )
+                            ( data, Cmd.none )
                 )
 
         GotOffsets json ->
@@ -407,7 +408,7 @@ simulateTurn data cmd model =
             let
                 action : Action
                 action =
-                    Unit.simulate state position unit
+                    Unit.simulate model.settings.gameplay.units state position unit
             in
             case action of
                 Action.MoveTo destination ->
@@ -423,7 +424,7 @@ simulateTurn data cmd model =
                                         |> Dict.insert destination unit
                     }
 
-                Action.AttackTargetAt destination ->
+                Action.AttackTargetAt damage destination ->
                     if destination == World.shrinePosition then
                         { state | shrine = state.shrine |> Health.damage 1 }
 
@@ -431,7 +432,7 @@ simulateTurn data cmd model =
                         { state
                             | units =
                                 state.units
-                                    |> Dict.update destination (Maybe.map (Unit.damage 1))
+                                    |> Dict.update destination (Maybe.map (Unit.damage damage))
                                     |> Dict.filter (\_ unit_ -> not (Unit.isDead unit_))
                         }
 
@@ -634,52 +635,55 @@ viewHud : Model -> GameData -> Html Msg
 viewHud model data =
     Html.div [ Attr.class "hud" ]
         [ viewCurrentWave model data
-        , viewBuildMenu data
+        , viewBuildMenu model data
         ]
 
 
-viewBuildMenu : GameData -> Html Msg
-viewBuildMenu data =
+viewBuildMenu : Model -> GameData -> Html Msg
+viewBuildMenu model data =
     Html.div [ Attr.class "hud__build" ]
-        [ Html.div [ Attr.class "hud__coins" ] []
+        [ Html.div [ Attr.class "hud__coins" ]
+            [ Html.text (String.fromInt data.playerGold) ]
         , Html.div [ Attr.class "hud__units" ]
             (List.map
                 (case data.phase of
                     DayPhase { selected } ->
                         viewGuardianButton
-                            { isLocked = False
+                            { isLocked = \cost -> data.playerGold < cost
                             , selected = selected
                             }
 
                     NightPhase _ ->
                         viewGuardianButton
-                            { isLocked = True
+                            { isLocked = always True
                             , selected = Nothing
                             }
                 )
-                [ Guardian.warrior
-                , Guardian.archer
-                , Guardian.mage
+                [ { guardian = Guardian.warrior, cost = model.settings.gameplay.costs.warrior }
+                , { guardian = Guardian.archer, cost = model.settings.gameplay.costs.archer }
+                , { guardian = Guardian.mage, cost = model.settings.gameplay.costs.mage }
                 ]
             )
         ]
 
 
-viewGuardianButton : { isLocked : Bool, selected : Maybe Guardian } -> Guardian -> Html Msg
-viewGuardianButton { isLocked, selected } unit =
+viewGuardianButton : { isLocked : Int -> Bool, selected : Maybe { cost : Int, guardian : Guardian } } -> { guardian : Guardian, cost : Int } -> Html Msg
+viewGuardianButton { isLocked, selected } ({ guardian, cost } as unitToBuy) =
     Html.div
         [ Attr.class "hud__unit"
         , Attr.classList
-            [ ( "hud__unit--selected", selected == Just unit )
-            , ( "hud__unit--locked", isLocked )
+            [ ( "hud__unit--selected", selected == Just unitToBuy )
+            , ( "hud__unit--locked", isLocked cost )
             ]
-        , if isLocked then
+        , if isLocked cost then
             Attr.disabled True
 
           else
-            Html.Events.onClick (GuardianClicked unit)
+            Html.Events.onClick (GuardianClicked unitToBuy)
         ]
-        [ Guardian.viewPreview unit.kind ]
+        [ Guardian.viewPreview guardian.kind
+        , Html.div [ Attr.class "hud__unit-cost" ] [ Html.text (String.fromInt cost) ]
+        ]
 
 
 
