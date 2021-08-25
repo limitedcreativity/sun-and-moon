@@ -44,17 +44,17 @@ positionAt gate =
             ( 0, World.size // 2 )
 
 
-decoder : Int -> Json.Decoder Level
-decoder msPerTurn =
+decoder : Int -> Enemy.Settings -> Json.Decoder Level
+decoder msPerTurn settings =
     Json.map3 Level
         (Json.field "lengthOfDay" Json.int)
         (Json.field "reward" Json.int)
-        (Json.field "waves" (wavesDecoder msPerTurn))
+        (Json.field "waves" (wavesDecoder msPerTurn settings))
 
 
-wavesDecoder : Int -> Json.Decoder (List Wave)
-wavesDecoder msPerTurn =
-    Json.keyValuePairs spawnsDecoder
+wavesDecoder : Int -> Enemy.Settings -> Json.Decoder (List Wave)
+wavesDecoder msPerTurn settings =
+    Json.keyValuePairs (spawnsDecoder settings)
         |> Json.map
             (List.filterMap
                 (\( roundStr, spawns ) ->
@@ -65,9 +65,9 @@ wavesDecoder msPerTurn =
             )
 
 
-spawnsDecoder : Json.Decoder (List Spawn)
-spawnsDecoder =
-    Json.keyValuePairs enemyDecoder
+spawnsDecoder : Enemy.Settings -> Json.Decoder (List Spawn)
+spawnsDecoder settings =
+    Json.keyValuePairs (enemyDecoder settings)
         |> Json.map
             (List.filterMap
                 (\( key, enemy ) ->
@@ -93,14 +93,14 @@ toGate str =
             Nothing
 
 
-enemyDecoder : Json.Decoder Enemy
-enemyDecoder =
+enemyDecoder : Enemy.Settings -> Json.Decoder Enemy
+enemyDecoder settings =
     Json.string
         |> Json.andThen
             (\enemy ->
                 case String.toLower enemy of
                     "warrior" ->
-                        Json.succeed Enemy.rogue
+                        Json.succeed (Enemy.rogue settings)
 
                     _ ->
                         Json.fail ("Unknown enemy: " ++ enemy)

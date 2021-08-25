@@ -27,7 +27,7 @@ import World exposing (World)
 type alias Settings =
     { warrior : { health : Int, damage : Int }
     , archer : { health : Int, damage : Int, range : Int }
-    , mage : { health : Int, damage : Int, range : Int }
+    , mage : { health : Int, heal : Int, range : Int }
     }
 
 
@@ -43,10 +43,10 @@ type EnemyKind
     | Necromancer
 
 
-rogue : Enemy
-rogue =
+rogue : Settings -> Enemy
+rogue settings =
     { kind = Rogue
-    , health = Health.init 5
+    , health = Health.init settings.warrior.health
     }
 
 
@@ -64,6 +64,9 @@ simulate settings world position unit =
     let
         targets =
             World.shrinePosition :: world.guardians
+
+        allies =
+            world.enemies
     in
     case unit.kind of
         Rogue ->
@@ -82,7 +85,11 @@ simulate settings world position unit =
                 }
 
         Necromancer ->
-            Action.DoNothing
+            Simulate.mage
+                { position = position
+                , allies = allies
+                , settings = settings.mage
+                }
 
 
 

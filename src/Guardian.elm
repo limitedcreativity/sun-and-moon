@@ -28,7 +28,7 @@ import World exposing (World)
 type alias Settings =
     { warrior : { health : Int, damage : Int }
     , archer : { health : Int, damage : Int, range : Int }
-    , mage : { health : Int, damage : Int, range : Int }
+    , mage : { health : Int, heal : Int, range : Int }
     }
 
 
@@ -44,24 +44,24 @@ type GuardianKind
     | Mage
 
 
-warrior : Guardian
-warrior =
+warrior : Settings -> Guardian
+warrior settings =
     { kind = Warrior
-    , health = Health.init 8
+    , health = Health.init settings.warrior.health
     }
 
 
-archer : Guardian
-archer =
+archer : Settings -> Guardian
+archer settings =
     { kind = Archer
-    , health = Health.init 6
+    , health = Health.init settings.archer.health
     }
 
 
-mage : Guardian
-mage =
+mage : Settings -> Guardian
+mage settings =
     { kind = Mage
-    , health = Health.init 4
+    , health = Health.init settings.mage.health
     }
 
 
@@ -93,7 +93,11 @@ simulate settings world position guardian =
                 }
 
         Mage ->
-            Action.DoNothing
+            Simulate.mage
+                { position = position
+                , allies = world.guardians
+                , settings = settings.mage
+                }
 
 
 

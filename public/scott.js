@@ -30,9 +30,8 @@ export const gameplay = {
       },
       mage: {
         health: 5,
-        damage: 1,
-        range: 4,
-        areaOfEffect: 1
+        heal: 1,
+        range: 2
       }
     },
     enemy: {
@@ -47,9 +46,8 @@ export const gameplay = {
       },
       mage: {
         health: 3,
-        damage: 1,
-        range: 4,
-        areaOfEffect: 1
+        heal: 1,
+        range: 2
       }
     }
   },

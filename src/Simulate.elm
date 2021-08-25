@@ -1,4 +1,4 @@
-module Simulate exposing (archer, warrior)
+module Simulate exposing (archer, mage, warrior)
 
 import Action exposing (Action)
 import Grid
@@ -55,6 +55,29 @@ archer { position, targets, settings } =
 
             else
                 Action.MoveTo (Grid.nextPositionTowards enemy position)
+
+        Nothing ->
+            Action.DoNothing
+
+
+mage :
+    { position : Grid.Position
+    , allies : List Grid.Position
+    , settings : { settings | heal : Int, range : Int }
+    }
+    -> Action
+mage { position, allies, settings } =
+    let
+        nearestAlly =
+            Grid.nearestShootableTarget position allies
+    in
+    case nearestAlly of
+        Just ally ->
+            if Grid.withinRange settings.range ally position then
+                Action.HealTargetAt settings.heal ally
+
+            else
+                Action.MoveTo (Grid.nextPositionTowards ally position)
 
         Nothing ->
             Action.DoNothing

@@ -20,7 +20,7 @@ import Settings exposing (Settings)
 import Shrine exposing (Shrine)
 import Task
 import Time
-import Unit exposing (Unit)
+import Unit exposing (Unit, toGuardian)
 import World
 
 
@@ -436,6 +436,14 @@ simulateTurn data cmd model =
                                     |> Dict.filter (\_ unit_ -> not (Unit.isDead unit_))
                         }
 
+                Action.HealTargetAt heal destination ->
+                    { state
+                        | units =
+                            state.units
+                                |> Dict.update destination (Maybe.map (Unit.heal heal))
+                                |> Dict.filter (\_ unit_ -> not (Unit.isDead unit_))
+                    }
+
                 Action.DoNothing ->
                     state
 
@@ -640,7 +648,7 @@ viewHud model data =
 
 
 viewBuildMenu : Model -> GameData -> Html Msg
-viewBuildMenu model data =
+viewBuildMenu { settings } data =
     Html.div [ Attr.class "hud__build" ]
         [ Html.div [ Attr.class "hud__coins" ]
             [ Html.text (String.fromInt data.playerGold) ]
@@ -650,25 +658,49 @@ viewBuildMenu model data =
                     DayPhase { selected } ->
                         viewGuardianButton
                             { isLocked = \cost -> data.playerGold < cost
+                            , settings = settings.gameplay.units.guardian
                             , selected = selected
                             }
 
                     NightPhase _ ->
                         viewGuardianButton
                             { isLocked = always True
+                            , settings = settings.gameplay.units.guardian
                             , selected = Nothing
                             }
                 )
-                [ { guardian = Guardian.warrior, cost = model.settings.gameplay.costs.warrior }
-                , { guardian = Guardian.archer, cost = model.settings.gameplay.costs.archer }
-                , { guardian = Guardian.mage, cost = model.settings.gameplay.costs.mage }
+                [ { toGuardian = Guardian.warrior
+                  , cost = settings.gameplay.costs.warrior
+                  }
+                , { toGuardian = Guardian.archer
+                  , cost = settings.gameplay.costs.archer
+                  }
+                , { toGuardian = Guardian.mage
+                  , cost = settings.gameplay.costs.mage
+                  }
                 ]
             )
         ]
 
 
-viewGuardianButton : { isLocked : Int -> Bool, selected : Maybe { cost : Int, guardian : Guardian } } -> { guardian : Guardian, cost : Int } -> Html Msg
-viewGuardianButton { isLocked, selected } ({ guardian, cost } as unitToBuy) =
+viewGuardianButton :
+    { settings : Guardian.Settings
+    , isLocked : Int -> Bool
+    , selected : Maybe { cost : Int, guardian : Guardian }
+    }
+    ->
+        { toGuardian : Guardian.Settings -> Guardian
+        , cost : Int
+        }
+    -> Html Msg
+viewGuardianButton { settings, isLocked, selected } { toGuardian, cost } =
+    let
+        guardian =
+            toGuardian settings
+
+        unitToBuy =
+            { guardian = guardian, cost = cost }
+    in
     Html.div
         [ Attr.class "hud__unit"
         , Attr.classList

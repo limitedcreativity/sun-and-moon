@@ -4,6 +4,7 @@ module Unit exposing
     , simulate
     , damage, isDead
     , view, toEnemy, toGuardian
+    , heal
     )
 
 {-|
@@ -89,6 +90,11 @@ damage amount unit =
 
         Enemy e ->
             Enemy (Health.damage amount e)
+
+
+heal : Int -> Unit -> Unit
+heal amount =
+    damage (negate amount)
 
 
 isDead : Unit -> Bool

@@ -1,6 +1,6 @@
 module Settings exposing (Settings, decoder)
 
-import Enemy
+import Enemy exposing (Enemy)
 import Guardian
 import Json.Decode as Json
 import Level exposing (Level)
@@ -24,25 +24,26 @@ decoder =
 
 type alias GameplaySettings =
     { msPerTurn : Int
+    , units : Unit.Settings
     , levels : Queue Level
     , startingGold : Int
     , costs : Costs
     , shrine : Shrine.Settings
-    , units : Unit.Settings
     }
 
 
 gameplaySettingsDecoder : Json.Decoder GameplaySettings
 gameplaySettingsDecoder =
-    Json.field "turnSpeed" Json.int
+    Json.map2 Tuple.pair
+        (Json.field "turnSpeed" Json.int)
+        (Json.field "units" unitSettingsDecoder)
         |> Json.andThen
-            (\msPerTurn ->
-                Json.map5 (GameplaySettings msPerTurn)
-                    (Json.field "levels" (levelsDecoder msPerTurn))
+            (\( msPerTurn, unitSettings ) ->
+                Json.map4 (GameplaySettings msPerTurn unitSettings)
+                    (Json.field "levels" (levelsDecoder msPerTurn unitSettings.enemy))
                     (Json.field "startingGold" Json.int)
                     (Json.field "costs" costsDecoder)
                     (Json.field "shrine" shrineSettingsDecoder)
-                    (Json.field "units" unitSettingsDecoder)
             )
 
 
@@ -67,9 +68,9 @@ costsDecoder =
         (Json.field "mage" Json.int)
 
 
-levelsDecoder : Int -> Json.Decoder (Queue Level)
-levelsDecoder msPerTurn =
-    Json.list (Level.decoder msPerTurn)
+levelsDecoder : Int -> Enemy.Settings -> Json.Decoder (Queue Level)
+levelsDecoder msPerTurn enemySettings =
+    Json.list (Level.decoder msPerTurn enemySettings)
         |> Json.map Queue.fromList
         |> Json.andThen (Maybe.map Json.succeed >> Maybe.withDefault (Json.fail "Levels list was empty"))
 
@@ -135,7 +136,7 @@ archerSettingsDecoder =
 
 type alias MageSettings =
     { health : Int
-    , damage : Int
+    , heal : Int
     , range : Int
     }
 
@@ -144,5 +145,5 @@ mageSettingsDecoder : Json.Decoder MageSettings
 mageSettingsDecoder =
     Json.map3 MageSettings
         (Json.field "health" Json.int)
-        (Json.field "damage" Json.int)
+        (Json.field "heal" Json.int)
         (Json.field "range" Json.int)
