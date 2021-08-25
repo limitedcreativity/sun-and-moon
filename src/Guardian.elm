@@ -86,27 +86,13 @@ simulate settings world position guardian =
                 }
 
         Archer ->
-            simulateArcher world position
+            Simulate.archer
+                { position = position
+                , targets = world.enemies
+                , settings = settings.archer
+                }
 
         Mage ->
-            Action.DoNothing
-
-
-simulateArcher : World -> Grid.Position -> Action
-simulateArcher world position =
-    let
-        nearestEnemy =
-            Grid.nearestShootableTarget position world.enemies
-    in
-    case nearestEnemy of
-        Just enemy ->
-            if Grid.withinRange 4 enemy position then
-                Action.AttackTargetAt 1 enemy
-
-            else
-                Action.MoveTo (Grid.nextPositionTowards enemy position)
-
-        Nothing ->
             Action.DoNothing
 
 

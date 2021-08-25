@@ -39,6 +39,8 @@ type alias Enemy =
 
 type EnemyKind
     = Rogue
+    | Assassin
+    | Necromancer
 
 
 rogue : Enemy
@@ -59,14 +61,28 @@ simulate :
     -> Enemy
     -> Action
 simulate settings world position unit =
+    let
+        targets =
+            World.shrinePosition :: world.guardians
+    in
     case unit.kind of
         Rogue ->
             Simulate.warrior
                 { world = world
                 , position = position
-                , targets = World.shrinePosition :: world.guardians
+                , targets = targets
                 , damage = settings.warrior.damage
                 }
+
+        Assassin ->
+            Simulate.archer
+                { position = position
+                , targets = targets
+                , settings = settings.archer
+                }
+
+        Necromancer ->
+            Action.DoNothing
 
 
 
@@ -79,6 +95,16 @@ toStyle kind =
         Rogue ->
             { skin = "teal"
             , shirt = "rebeccapurple"
+            }
+
+        Assassin ->
+            { skin = "teal"
+            , shirt = "darkgray"
+            }
+
+        Necromancer ->
+            { skin = "teal"
+            , shirt = "lime"
             }
 
 
