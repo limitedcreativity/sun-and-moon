@@ -101,7 +101,10 @@ enemyDecoder settings =
                 case String.toLower enemy of
                     "warrior" ->
                         Json.succeed (Enemy.rogue settings)
-
+                    "archer" ->
+                        Json.succeed (Enemy.assassin settings)
+                    "mage" ->
+                        Json.succeed (Enemy.necromancer settings)
                     _ ->
                         Json.fail ("Unknown enemy: " ++ enemy)
             )
