@@ -198,8 +198,8 @@ export const gameplay = {
         23: { north: warrior, east: warrior, west: warrior },
         24: { north: warrior, east: archer, west: archer },
         25: { north: mage, east: warrior, west: warrior },
-        30: { north: archer, east: mage, west: mage, },
+        30: { north: archer, east: mage, west: mage },
       }
-    },
+    }
   ]
 }
