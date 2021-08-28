@@ -15,7 +15,7 @@ export const gameplay = {
   costs: {
     warrior: 200,
     archer: 500,
-    mage: 700
+    mage: 900
   },
   units: {
     guardian: {
@@ -63,7 +63,7 @@ export const gameplay = {
     },
     {
       lengthOfDay: 19000,
-      reward: 1000,
+      reward: 900,
       waves: {
         0: { east: warrior },
         1: { west: warrior },
@@ -86,7 +86,7 @@ export const gameplay = {
     },
     {
       lengthOfDay: 17000,
-      reward: 1100,
+      reward: 1000,
       waves: {
         0: { north: warrior, east: mage, west: mage },
         6: { north: archer, east: warrior, west: warrior },
@@ -96,7 +96,7 @@ export const gameplay = {
     },
     {
       lengthOfDay: 16000,
-      reward: 1100,
+      reward: 1000,
       waves: {
         0: { north: warrior },
         1: { east: mage },
@@ -118,7 +118,7 @@ export const gameplay = {
     },
     {
       lengthOfDay: 15000,
-      reward: 1200,
+      reward: 1000,
       waves: {
         0: { north: warrior, east: mage, west: mage },
         3: { north: archer, east: warrior, west: warrior },
@@ -130,7 +130,7 @@ export const gameplay = {
     },
     {
       lengthOfDay: 14000,
-      reward: 1200,
+      reward: 1000,
       waves: {
         0: { north: warrior, east: mage },
         2: { north: warrior, west: mage },
@@ -148,7 +148,7 @@ export const gameplay = {
     },
     {
       lengthOfDay: 13000,
-      reward: 1300,
+      reward: 1100,
       waves: {
         0: { north: mage, east: mage, west: mage },
         3: { north: mage, east: mage, west: mage },
@@ -160,7 +160,7 @@ export const gameplay = {
     },
     {
       lengthOfDay: 12000,
-      reward: 1300,
+      reward: 1100,
       waves: {
         0: { north: warrior, east: archer, west: mage },
         4: { north: archer, east: mage, west: warrior },
@@ -173,7 +173,7 @@ export const gameplay = {
     },
     {
       lengthOfDay: 11000,
-      reward: 1500,
+      reward: 1200,
       waves: {
         0: { north: warrior },
         1: { north: warrior },
