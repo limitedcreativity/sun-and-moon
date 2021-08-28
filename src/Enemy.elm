@@ -49,11 +49,13 @@ rogue settings =
     , health = Health.init settings.warrior.health
     }
 
+
 assassin : Settings -> Enemy
 assassin settings =
     { kind = Assassin
     , health = Health.init settings.archer.health
     }
+
 
 necromancer : Settings -> Enemy
 necromancer settings =
