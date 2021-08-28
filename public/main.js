@@ -2,6 +2,8 @@ import { Elm } from '../src/Main.elm'
 import { gameplay } from './scott.js'
 import { music } from './dhruv.js'
 
+// Keep in sync with World.size!
+const GRID_SIZE = 9
 
 const app = Elm.Main.init({
   node: document.getElementById('app'),
@@ -10,7 +12,14 @@ const app = Elm.Main.init({
 
 
 const sendOffsets = () => {
-  app.ports.onGridResize.send(getPositions())
+  const positions = getPositions()
+  const css = positions.map(([i, { x, y, scale }]) => {
+    const ix = parseInt(i % GRID_SIZE)
+    const iy = parseInt(i / GRID_SIZE)
+    return `.x${ix}.y${iy} { top: ${y}px; left: ${x}px; transform: translate(-50%, -100%) scale(${scale}) }`
+  }).join('\n\n')
+  document.getElementById('offsets').innerHTML = css
+  app.ports.onGridResize.send(positions)
 }
 
 window.addEventListener('resize', sendOffsets)

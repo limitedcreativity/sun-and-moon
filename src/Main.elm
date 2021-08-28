@@ -11,6 +11,7 @@ import Health
 import Html exposing (Html)
 import Html.Attributes as Attr
 import Html.Events
+import Html.Keyed
 import Json.Decode as Json
 import Level exposing (Level)
 import Ports
@@ -18,8 +19,6 @@ import Process exposing (spawn)
 import Queue exposing (Queue)
 import Settings exposing (Settings)
 import Shrine exposing (Shrine)
-import Task
-import Time
 import Unit exposing (Unit, toGuardian)
 import World
 
@@ -205,7 +204,7 @@ update msg model_ =
                                 Just { guardian, cost } ->
                                     ( { data
                                         | phase = DayPhase { selected = Nothing }
-                                        , units = Dict.insert ( x, y ) (Unit.guardian guardian) data.units
+                                        , units = Dict.insert ( x, y ) (Unit.guardian (Dict.values data.units) guardian) data.units
                                         , playerGold = data.playerGold - cost
                                       }
                                     , Ports.sendGuardianBuilt guardian
@@ -245,9 +244,6 @@ handleTick delta data model =
 
         newData =
             { data | timeElapsed = newTimeElapsed }
-
-        level =
-            Queue.current newData.levels
     in
     case newData.phase of
         DayPhase _ ->
@@ -380,7 +376,7 @@ updateNightPhase { previousTimeElapsed, remainingWaves, model, data } =
                     units
 
                 Nothing ->
-                    Dict.insert position (Unit.enemy spawn.enemy) units
+                    Dict.insert position (Unit.enemy (Dict.values data.units) spawn.enemy) units
     in
     case scene of
         InGame newGameData ->
@@ -593,20 +589,30 @@ viewGame model data =
                             )
                     )
             )
-        , List.range 0 (World.size * World.size - 1)
+        , Dict.toList data.units
+            |> List.sortBy Tuple.first
             |> List.map
-                (\i ->
-                    viewPieceAtIndex i
-                        model
-                        [ Dict.get (fromIndex i) data.units
-                            |> Maybe.map Unit.view
-                            |> Maybe.withDefault (Html.text "")
+                (\( ( x, y ), unit ) ->
+                    ( String.fromInt unit.id
+                    , Html.div
+                        [ "unit x{{x}} y{{y}}"
+                            |> String.replace "{{x}}" (String.fromInt x)
+                            |> String.replace "{{y}}" (String.fromInt y)
+                            |> Attr.class
                         ]
+                        [ Unit.view unit ]
+                    )
                 )
-            |> Html.div [ Attr.class "unit__group" ]
-        , viewShrine model data
+            |> Html.Keyed.node "div" [ Attr.class "unit__group" ]
+
+        -- , viewShrine model data
         , viewHud model data
         ]
+
+
+type Token
+    = UnitToken Unit
+    | ShrineToken Shrine
 
 
 fromIndex : Int -> Grid.Position

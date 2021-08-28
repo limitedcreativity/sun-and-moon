@@ -73,6 +73,8 @@ body > div[data-elm-hot] {
   top: 0;
   left: 0;
   transform-origin: bottom;
+  /* Keep in just below the turn speed in scott.js */
+  transition: transform 700ms linear, top 700ms linear, left 700ms linear;
 }
 
 .unit svg {

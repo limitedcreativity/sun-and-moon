@@ -34,7 +34,13 @@ type alias Settings =
     }
 
 
-type Unit
+type alias Unit =
+    { id : Int
+    , kind : Kind
+    }
+
+
+type Kind
     = Guardian Guardian.Guardian
     | Enemy Enemy.Enemy
 
@@ -43,14 +49,14 @@ type Unit
 -- CREATE
 
 
-guardian : Guardian.Guardian -> Unit
-guardian =
-    Guardian
+guardian : List Unit -> Guardian.Guardian -> Unit
+guardian units g =
+    Unit (maxIdIn units) (Guardian g)
 
 
-enemy : Enemy.Enemy -> Unit
-enemy =
-    Enemy
+enemy : List Unit -> Enemy.Enemy -> Unit
+enemy units e =
+    Unit (maxIdIn units) (Enemy e)
 
 
 
@@ -74,7 +80,7 @@ simulate settings state position unit =
         world =
             toWorld state
     in
-    case unit of
+    case unit.kind of
         Guardian g ->
             Guardian.simulate settings.guardian world position g
 
@@ -84,12 +90,12 @@ simulate settings state position unit =
 
 damage : Int -> Unit -> Unit
 damage amount unit =
-    case unit of
+    case unit.kind of
         Guardian g ->
-            Guardian (Health.damage amount g)
+            { id = unit.id, kind = Guardian (Health.damage amount g) }
 
         Enemy e ->
-            Enemy (Health.damage amount e)
+            { id = unit.id, kind = Enemy (Health.damage amount e) }
 
 
 heal : Int -> Unit -> Unit
@@ -99,7 +105,7 @@ heal amount =
 
 isDead : Unit -> Bool
 isDead unit =
-    case unit of
+    case unit.kind of
         Guardian g ->
             Health.isDead g
 
@@ -113,7 +119,7 @@ isDead unit =
 
 view : Unit -> Svg msg
 view unit =
-    case unit of
+    case unit.kind of
         Guardian g ->
             Guardian.view g
 
@@ -123,7 +129,7 @@ view unit =
 
 toEnemy : Unit -> Maybe Enemy.Enemy
 toEnemy unit =
-    case unit of
+    case unit.kind of
         Enemy e ->
             Just e
 
@@ -133,7 +139,7 @@ toEnemy unit =
 
 toGuardian : Unit -> Maybe Guardian.Guardian
 toGuardian unit =
-    case unit of
+    case unit.kind of
         Guardian g ->
             Just g
 
@@ -170,9 +176,17 @@ isGuardian =
 
 isDamaged : Unit -> Bool
 isDamaged unit =
-    case unit of
+    case unit.kind of
         Guardian { health } ->
             health.current < health.max
 
         Enemy { health } ->
             health.current < health.max
+
+
+maxIdIn : List Unit -> Int
+maxIdIn units =
+    List.map .id units
+        |> List.maximum
+        |> Maybe.map ((+) 1)
+        |> Maybe.withDefault 0
