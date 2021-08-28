@@ -67,18 +67,20 @@ export const gameplay = {
       waves: {
         0: { east: warrior },
         1: { west: warrior },
-        2: { north: warrior },
-        6: { east: archer, west: archer }, 
-        10: { north: warrior, east: warrior, west: warrior },
+        2: { north: archer },
+        6: { east: warrior, west: warrior }, 
+        10: { east: warrior, west: warrior },
       }
     },
     {
       lengthOfDay: 18000,
       reward: 900,
       waves: {
-        0: { north: warrior, east: warrior },
-        4: { north: warrior, west: warrior },
-        8: { east: archer, west: archer },
+        0: { north: warrior },
+        2: { east: warrior },
+        4: { north: archer },
+        6: { west: warrior },
+        8: { east: warrior, west: warrior },
         15: { north: mage, east: warrior, west: warrior }, 
       }
     },
@@ -88,7 +90,7 @@ export const gameplay = {
       waves: {
         0: { north: warrior, east: mage, west: mage },
         6: { north: archer, east: warrior, west: warrior },
-        12: { north: mage, east: archer, west: archer },
+        12: { north: mage },
         16: { north: mage, east: warrior, west: warrior }, 
       }
     },
@@ -97,7 +99,7 @@ export const gameplay = {
       reward: 900,
       waves: {
         0: { north: warrior },
-        1: { east: warrior },
+        1: { east: mage },
         2: { north: warrior },
         3: { west: warrior },
         4: { east: warrior },
@@ -106,12 +108,12 @@ export const gameplay = {
         7: { east: warrior },
         8: { west: archer },
         9: { north: warrior },
-        10: { west: warrior },
-        11: { east: archer },
-        12: { west: mage },
-        13: { north: archer },
-        14: { east: mage },
-        15: { north: warrior },
+        11: { west: warrior },
+        13: { east: archer },
+        15: { west: mage },
+        17: { north: archer },
+        19: { east: mage },
+        21: { north: warrior },
       }
     },
     {
@@ -131,16 +133,17 @@ export const gameplay = {
       reward: 1000,
       waves: {
         0: { north: warrior, east: mage },
-        2: { north: warrior, west: archer },
-        4: { north: warrior, east: mage },
+        2: { north: warrior, west: mage },
+        4: { north: warrior, east: archer },
         6: { north: warrior, west: archer },
         8: { north: warrior, east: mage },
-        10: { north: warrior, west: archer },
-        12: { north: warrior, east: mage },
+        10: { north: warrior, west: mage },
+        12: { north: warrior, east: archer },
         14: { north: warrior, west: archer },
         16: { north: warrior, east: mage },
-        18: { north: warrior, west: archer },
-        20: { north: warrior, east: mage },
+        18: { north: warrior, west: mage },
+        20: { north: warrior, east: archer },
+        22: { north: warrior, west: archer },
       }
     },
     {
