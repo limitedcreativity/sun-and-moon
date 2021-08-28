@@ -7,7 +7,7 @@ const { warrior, archer, mage } = {
 }
 
 export const gameplay = {
-  turnSpeed: 1000,
+  turnSpeed: 900,
   startingGold: 800,
   shrine: {
     health: 10
@@ -15,7 +15,7 @@ export const gameplay = {
   costs: {
     warrior: 200,
     archer: 500,
-    mage: 1000
+    mage: 700
   },
   units: {
     guardian: {
@@ -29,14 +29,14 @@ export const gameplay = {
         range: 3
       },
       mage: {
-        health: 5,
-        heal: 1,
+        health: 6,
+        heal: 2,
         range: 2
       }
     },
     enemy: {
       warrior: {
-        health: 6,
+        health: 5,
         damage: 2
       },
       archer: {
@@ -45,8 +45,8 @@ export const gameplay = {
         range: 3
       },
       mage: {
-        health: 4,
-        heal: 1,
+        health: 3,
+        heal: 2,
         range: 2
       }
     }
@@ -54,7 +54,7 @@ export const gameplay = {
   levels: [
     {
       lengthOfDay: 20000,
-      reward: 800,
+      reward: 900,
       waves: {
         0: { north: warrior },
         5: { east: warrior, west: warrior },
@@ -63,7 +63,7 @@ export const gameplay = {
     },
     {
       lengthOfDay: 19000,
-      reward: 900,
+      reward: 1000,
       waves: {
         0: { east: warrior },
         1: { west: warrior },
@@ -86,7 +86,7 @@ export const gameplay = {
     },
     {
       lengthOfDay: 17000,
-      reward: 1000,
+      reward: 1100,
       waves: {
         0: { north: warrior, east: mage, west: mage },
         6: { north: archer, east: warrior, west: warrior },
@@ -118,7 +118,7 @@ export const gameplay = {
     },
     {
       lengthOfDay: 15000,
-      reward: 1100,
+      reward: 1200,
       waves: {
         0: { north: warrior, east: mage, west: mage },
         3: { north: archer, east: warrior, west: warrior },
@@ -148,7 +148,7 @@ export const gameplay = {
     },
     {
       lengthOfDay: 13000,
-      reward: 1200,
+      reward: 1300,
       waves: {
         0: { north: mage, east: mage, west: mage },
         3: { north: mage, east: mage, west: mage },
@@ -160,7 +160,7 @@ export const gameplay = {
     },
     {
       lengthOfDay: 12000,
-      reward: 1200,
+      reward: 1300,
       waves: {
         0: { north: warrior, east: archer, west: mage },
         4: { north: archer, east: mage, west: warrior },
