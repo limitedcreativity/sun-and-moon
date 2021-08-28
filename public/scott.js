@@ -8,7 +8,7 @@ const { warrior, archer, mage } = {
 
 export const gameplay = {
   turnSpeed: 1000,
-  startingGold: 1000,
+  startingGold: 800,
   shrine: {
     health: 10
   },
@@ -53,8 +53,8 @@ export const gameplay = {
   },
   levels: [
     {
-      lengthOfDay: 35000,
-      reward: 1000,
+      lengthOfDay: 20000,
+      reward: 800,
       waves: {
         0: { north: warrior },
         5: { east: warrior, west: warrior },
@@ -62,8 +62,8 @@ export const gameplay = {
       }
     },
     {
-      lengthOfDay: 35000,
-      reward: 1000,
+      lengthOfDay: 19000,
+      reward: 800,
       waves: {
         0: { east: warrior },
         1: { west: warrior },
@@ -73,8 +73,8 @@ export const gameplay = {
       }
     },
     {
-      lengthOfDay: 35000,
-      reward: 1000,
+      lengthOfDay: 18000,
+      reward: 900,
       waves: {
         0: { north: warrior, east: warrior },
         4: { north: warrior, west: warrior },
@@ -83,8 +83,8 @@ export const gameplay = {
       }
     },
     {
-      lengthOfDay: 35000,
-      reward: 1500,
+      lengthOfDay: 17000,
+      reward: 900,
       waves: {
         0: { north: warrior, east: mage, west: mage },
         6: { north: archer, east: warrior, west: warrior },
@@ -93,8 +93,8 @@ export const gameplay = {
       }
     },
     {
-      lengthOfDay: 35000,
-      reward: 1500,
+      lengthOfDay: 16000,
+      reward: 1000,
       waves: {
         0: { north: warrior },
         1: { east: warrior },
@@ -115,8 +115,8 @@ export const gameplay = {
       }
     },
     {
-      lengthOfDay: 35000,
-      reward: 1500,
+      lengthOfDay: 15000,
+      reward: 1000,
       waves: {
         0: { north: warrior, east: mage, west: mage },
         3: { north: archer, east: warrior, west: warrior },
@@ -127,8 +127,8 @@ export const gameplay = {
       }
     },
     {
-      lengthOfDay: 30000,
-      reward: 1500,
+      lengthOfDay: 14000,
+      reward: 1100,
       waves: {
         0: { north: warrior, east: mage },
         2: { north: warrior, west: archer },
@@ -144,8 +144,8 @@ export const gameplay = {
       }
     },
     {
-      lengthOfDay: 30000,
-      reward: 1500,
+      lengthOfDay: 13000,
+      reward: 1100,
       waves: {
         0: { north: mage, east: mage, west: mage },
         3: { north: mage, east: mage, west: mage },
@@ -156,8 +156,8 @@ export const gameplay = {
       }
     },
     {
-      lengthOfDay: 30000,
-      reward: 2000,
+      lengthOfDay: 12000,
+      reward: 1200,
       waves: {
         0: { north: warrior, east: archer, west: mage },
         4: { north: archer, east: mage, west: warrior },
@@ -169,8 +169,8 @@ export const gameplay = {
       }
     },
     {
-      lengthOfDay: 25000,
-      reward: 2000,
+      lengthOfDay: 11000,
+      reward: 1200,
       waves: {
         0: { north: warrior },
         1: { north: warrior },
@@ -179,25 +179,29 @@ export const gameplay = {
         4: { north: warrior },
         5: { north: warrior },
         6: { north: warrior },
-        7: { north: warrior },
-        8: { north: warrior },
-        9: { north: warrior },
-        10: { east: archer },
-        11: { west: archer },
-        12: { east: archer },
-        13: { west: archer },
-        14: { east: archer },
-        15: { west: archer },
-        16: { east: mage },
-        17: { west: mage },
-        18: { east: mage },
-        19: { west: mage },
-        20: { east: mage },
-        21: { west: mage },
+        7: { north: warrior east: warrior, west: warrior },
+        8: { north: warrior east: warrior, west: warrior },
+        9: { north: warrior east: warrior, west: warrior },
+        10: { north: warrior, east: archer },
+        11: { north: warrior, west: archer },
+        12: { north: warrior, east: archer },
+        13: { north: warrior, west: archer },
+        14: { north: warrior, east: archer },
+        15: { north: warrior, west: archer },
+        16: { north: warrior, east: mage },
+        17: { north: warrior, west: mage },
+        18: { north: warrior, east: mage },
+        19: { north: warrior, west: mage },
+        20: { east: mage east: warrior, west: warrior },
+        21: { west: mage east: warrior, west: warrior },
         22: { north: warrior, east: warrior, west: warrior },
         23: { north: warrior, east: warrior, west: warrior },
         24: { north: warrior, east: archer, west: archer },
         25: { north: mage, east: warrior, west: warrior },
+        26: { north: archer, east: mage, west: mage },
+        27: { north: warrior, east: warrior, west: warrior },
+        28: { north: warrior, east: warrior, west: warrior },
+        29: { north: mage, east: warrior, west: warrior },
         30: { north: archer, east: mage, west: mage },
       }
     }
