@@ -1,6 +1,6 @@
 module Enemy exposing
     ( Settings
-    , Enemy, rogue, archer, necromancer
+    , Enemy, rogue, assassin, necromancer
     , simulate
     , view
     , EnemyKind(..)
@@ -9,7 +9,7 @@ module Enemy exposing
 {-|
 
 @docs Settings
-@docs Enemy, rogue, archer, necromancer
+@docs Enemy, rogue, assassin, necromancer
 @docs simulate
 @docs view
 
