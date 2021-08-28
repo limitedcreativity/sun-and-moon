@@ -1,6 +1,6 @@
 module Enemy exposing
     ( Settings
-    , Enemy, rogue
+    , Enemy, rogue, archer, necromancer
     , simulate
     , view
     , EnemyKind(..)
@@ -9,7 +9,7 @@ module Enemy exposing
 {-|
 
 @docs Settings
-@docs Enemy, rogue
+@docs Enemy, rogue, archer, necromancer
 @docs simulate
 @docs view
 
@@ -49,6 +49,17 @@ rogue settings =
     , health = Health.init settings.warrior.health
     }
 
+assassin : Settings -> Enemy
+assassin settings =
+    { kind = Assassin
+    , health = Health.init settings.archer.health
+    }
+
+necromancer : Settings -> Enemy
+necromancer settings =
+    { kind = Necromancer
+    , health = Health.init settings.mage.health
+    }
 
 
 -- UPDATE
