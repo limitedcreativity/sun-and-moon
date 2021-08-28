@@ -1,13 +1,19 @@
-const nightFadeDuration = 1000
+const nightFadeDuration = 9000
+
+const night = new Audio('/music/night_coming.wav');
+night.loop = true;
 
 export const music = {
   nightFadeDuration,
   handleEvents: {
     onDayStart: () => {
       console.log('DAY STARTED!')
+      night.pause();
     },
     onNightApproach: () => {
-      console.log('NIGHT APPROACHES!')
+      console.log("NIGHT")
+      night.currentTime = 0;
+      night.play();
     },
   },
   soundEffects: {
