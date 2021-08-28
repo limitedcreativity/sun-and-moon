@@ -109,5 +109,5 @@ enemyDecoder settings =
                         Json.succeed (Enemy.necromancer settings)
 
                     _ ->
-                        Json.fail ("Unknown enemy: " ++ enemy)
+                        Json.fail ("You typed in an enemy wrong you moron: " ++ enemy)
             )
