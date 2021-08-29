@@ -590,17 +590,30 @@ viewGame model data =
                     )
             )
         , Dict.toList data.units
+            |> List.map (Tuple.mapSecond UnitToken)
+            |> List.append [ ( World.shrinePosition, ShrineToken ) ]
             |> List.sortBy Tuple.first
             |> List.map
-                (\( ( x, y ), unit ) ->
-                    ( String.fromInt unit.id
+                (\( ( x, y ), token ) ->
+                    ( case token of
+                        UnitToken unit ->
+                            String.fromInt unit.id
+
+                        ShrineToken ->
+                            "shrine"
                     , Html.div
                         [ "unit x{{x}} y{{y}}"
                             |> String.replace "{{x}}" (String.fromInt x)
                             |> String.replace "{{y}}" (String.fromInt y)
                             |> Attr.class
                         ]
-                        [ Unit.view unit ]
+                        [ case token of
+                            UnitToken unit ->
+                                Unit.view unit
+
+                            ShrineToken ->
+                                Shrine.view data.shrine
+                        ]
                     )
                 )
             |> Html.Keyed.node "div" [ Attr.class "unit__group" ]
@@ -612,7 +625,7 @@ viewGame model data =
 
 type Token
     = UnitToken Unit
-    | ShrineToken Shrine
+    | ShrineToken
 
 
 fromIndex : Int -> Grid.Position
@@ -640,13 +653,6 @@ viewPieceAtIndex i model =
 toIndex : Grid.Position -> Int
 toIndex ( x, y ) =
     x + y * World.size
-
-
-viewShrine : Model -> GameData -> Html msg
-viewShrine model data =
-    viewPieceAtIndex (toIndex World.shrinePosition)
-        model
-        [ Shrine.view data.shrine ]
 
 
 viewHud : Model -> GameData -> Html Msg
